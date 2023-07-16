@@ -60,19 +60,18 @@ const fetchISSFlyOverTimes = function (coords, callback) {
   const url = `https://iss-flyover.herokuapp.com/json/?lat=${coords.latitude}&lon=${coords.longitude}`;
   request(url, (error, response, body) => {
     if (error) {
-      return callback(error, null);
+      callback(error, null);
+      return;
     }
 
     if (response.statusCode !== 200) {
-      callback(
-        Error(
-          `Status Code ${response.statusCode} when fetching ISS pass times: ${body}`
-        ),
-        null
-      );
+      const msg = `Status Code ${response.statusCode} when fetching ISS pass times: ${body}`;
+      callback(Error(msg), null);
+      return;
     }
     const result = JSON.parse(body);
-    callback(null, result);
+    const passTimesArr = result.response;
+    callback(null, passTimesArr);
   });
 };
 
